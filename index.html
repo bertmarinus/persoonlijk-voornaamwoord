@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Persoonlijk voornaamwoord - LearnForge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5568d3;
+            --secondary: #48bb78;
+            --card-bg: #ffffff;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --success: #48bb78;
+            --error: #f56565;
+        }
+
+        body {
+            font-family: 'Nunito', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #e0e7ff 0%, #fce7f3 50%, #dbeafe 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; }
+
+        /* TERUG LINK */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 18px;
+            transition: color 0.3s;
+        }
+        .back-link:hover { color: var(--primary); }
+
+        /* SCORE BALK */
+        .score-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            border-radius: 18px;
+            padding: 14px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .score-info {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .score-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 19px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .score-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .score-dot.goed { background: var(--success); }
+        .score-dot.fout { background: var(--error); }
+
+        .score-teller {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 21px;
+            font-weight: 700;
+            color: var(--primary);
+            background: #e0e7ff;
+            padding: 6px 18px;
+            border-radius: 20px;
+        }
+
+        .reset-btn {
+            background: none;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .reset-btn:hover { border-color: var(--error); color: var(--error); }
+
+        /* VRAAGKAART */
+        .question-card {
+            background: var(--primary);
+            border-radius: 24px;
+            padding: 36px 44px;
+            margin-bottom: 22px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+        }
+
+        .question-label {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            opacity: 0.75;
+            margin-bottom: 14px;
+        }
+
+        .question-sentence {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        /* CONTENT KAART */
+        .content-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 38px 44px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-icon {
+            width: 68px; height: 68px;
+            border-radius: 18px;
+            background: #dbeafe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            margin: 0 auto 18px;
+        }
+
+        .card-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-dark);
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        .card-subtitle {
+            color: var(--text-light);
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        /* INVOER */
+        .text-input {
+            width: 100%;
+            padding: 18px 22px;
+            border: 3px solid var(--border);
+            border-radius: 16px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            text-align: center;
+            color: var(--text-dark);
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.12);
+        }
+
+        .text-input::placeholder { color: #cbd5e0; }
+
+        /* KNOPPEN */
+        .button-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 14px;
+        }
+
+        .btn-check {
+            padding: 16px 24px;
+            background: var(--primary);
+            border: none;
+            border-radius: 14px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-check:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-hint {
+            padding: 16px 24px;
+            background: #fef3c7;
+            border: 2px solid #f6d860;
+            border-radius: 14px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: #92400e;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-hint:hover {
+            background: #fde68a;
+            transform: translateY(-2px);
+        }
+
+        /* =============================================
+           FEEDBACK POPUPS — goed en fout
+           Stijl: gecentreerde kaart midden in scherm
+        ============================================= */
+        .feedback-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            padding: 20px;
+            animation: fadeIn 0.15s ease;
+        }
+
+        .feedback-popup {
+            width: 320px;
+            border-radius: 28px;
+            padding: 44px 36px 38px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            text-align: center;
+        }
+
+        .feedback-popup.goed { background: #4caf7d; }
+        .feedback-popup.fout { background: #e86060; }
+
+        .feedback-cirkel {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+
+        .feedback-tekst {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 34px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .feedback-sub {
+            font-family: 'Nunito', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.85);
+            margin-top: 8px;
+        }
+
+        /* =============================================
+           HINT MODAL
+        ============================================= */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+        .modal-content {
+            background: white;
+            border-radius: 22px;
+            padding: 32px 40px;
+            max-width: 420px;
+            width: 92%;
+            text-align: left;
+            animation: popIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+        }
+
+        @keyframes popIn {
+            from { opacity:0; transform:scale(0.85); }
+            to   { opacity:1; transform:scale(1); }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .modal-icon-circle {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: #dbeafe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .modal-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .hint-antwoord {
+            background: #e0e7ff;
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 16px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 19px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .hint-antwoord-woord {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .hint-subtext {
+            font-weight: 700;
+            color: var(--text-dark);
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .hint-tips { list-style: none; padding: 0; }
+
+        .hint-tips li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 9px 0;
+            font-size: 16px;
+            color: var(--text-dark);
+            border-bottom: 1px solid var(--border);
+            line-height: 1.5;
+        }
+
+        .hint-tips li:last-child { border-bottom: none; }
+
+        .hint-tips li::before {
+            content: "•";
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 22px;
+            line-height: 1.1;
+            flex-shrink: 0;
+        }
+
+        .modal-footer { margin-top: 22px; text-align: right; }
+
+        .btn-ok {
+            padding: 12px 32px;
+            background: var(--primary);
+            border: none;
+            border-radius: 12px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 14px rgba(102,126,234,0.35);
+        }
+
+        .btn-ok:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102,126,234,0.45);
+        }
+
+        /* EINDSCHERM */
+        .eindscherm { display: none; text-align: center; }
+
+        .eind-score {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 72px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 8px 0;
+        }
+
+        .eind-label  { color: var(--text-light); font-size: 18px; margin-bottom: 12px; }
+        .eind-bericht { font-size: 18px; color: var(--text-dark); margin-bottom: 30px; }
+
+        .final-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .btn-secondary {
+            padding: 15px 20px;
+            border: 3px solid var(--border);
+            background: white;
+            border-radius: 14px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+
+        .btn-secondary:hover { border-color: var(--text-light); background: #f7fafc; }
+
+        .btn-success {
+            padding: 15px 20px;
+            background: var(--secondary);
+            border: none;
+            border-radius: 14px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 17px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(72,187,120,0.3);
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(72,187,120,0.4);
+        }
+
+        .hidden { display: none !important; }
+
+        /* =============================================
+           RESPONSIVE
+        ============================================= */
+        @media (max-width: 900px) {
+            .content-card { padding: 32px 30px; }
+            .question-card { padding: 28px 30px; }
+            .question-sentence { font-size: 26px; }
+        }
+
+        @media (max-width: 700px) {
+            body { padding: 14px; }
+            .question-card { padding: 24px 20px; }
+            .question-sentence { font-size: 22px; }
+            .content-card { padding: 26px 20px; }
+            .card-title { font-size: 23px; }
+            .final-buttons { grid-template-columns: 1fr; }
+            .feedback-popup { width: 280px; padding: 36px 28px 30px; }
+            .feedback-tekst { font-size: 26px; }
+        }
+
+        @media (max-width: 480px) {
+            .question-sentence { font-size: 19px; }
+            .text-input { font-size: 19px; }
+            .button-row { grid-template-columns: 1fr; }
+            .score-info { gap: 10px; }
+            .feedback-cirkel { width: 66px; height: 66px; font-size: 32px; }
+        }
+
+        /* iPad landscape */
+        @media (orientation: landscape) and (max-height: 768px) {
+            body { padding: 12px; }
+            .question-card { padding: 18px 40px; margin-bottom: 14px; }
+            .question-label { margin-bottom: 8px; }
+            .question-sentence { font-size: 26px; }
+            .content-card { padding: 22px 40px; }
+            .card-icon { width: 52px; height: 52px; font-size: 26px; margin-bottom: 12px; }
+            .card-title { font-size: 22px; margin-bottom: 4px; }
+            .card-subtitle { font-size: 14px; margin-bottom: 16px; }
+            .text-input { padding: 14px 22px; margin-bottom: 14px; }
+            .score-bar { padding: 10px 20px; margin-bottom: 14px; }
+            .feedback-popup { width: 260px; padding: 32px 24px 26px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- Terug link -->
+    <div style="display:flex; gap:16px; margin-bottom:18px; flex-wrap:wrap;">
+        <a href="https://bertmarinus.github.io/learnforge/" class="back-link">🏠 Hoofdmenu</a>
+        <a href="https://bertmarinus.github.io/learnforge/" class="back-link">← Terug naar overzicht</a>
+    </div>
+
+
+
+    <!-- Vraagkaart -->
+    <div class="question-card" id="questionCard">
+        <div class="question-label">Zoek het persoonlijk voornaamwoord</div>
+        <div class="question-sentence" id="questionSentence">…</div>
+    </div>
+
+    <!-- Oefening kaart -->
+    <div class="content-card" id="oefeningCard">
+        <div class="card-icon">🙋</div>
+        <div class="card-title">Wat is het persoonlijk voornaamwoord?</div>
+        <div class="card-subtitle">Typ het persoonlijk voornaamwoord en druk op Enter of Controleer.</div>
+
+        <input
+            type="text"
+            class="text-input"
+            id="antwoordInput"
+            placeholder="typ hier…"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="none"
+            spellcheck="false"
+            enterkeyhint="done"
+        >
+
+        <div class="button-row">
+            <button class="btn-hint" id="hintBtn" onclick="showHint()">💡 Hint</button>
+            <button class="btn-check" id="checkBtn" onclick="controleer()">✓ Controleer</button>
+        </div>
+    </div>
+
+    <!-- Eindscherm -->
+    <div class="content-card eindscherm" id="eindscherm">
+        <div class="card-icon" style="background:#d1fae5;">🏆</div>
+        <div class="card-title">Alle zinnen gehad!</div>
+        <div class="eind-score" id="eindScore">0/0</div>
+        <div class="eind-label">goed / totaal geprobeerd</div>
+        <div class="eind-bericht" id="eindBericht"></div>
+        <div class="final-buttons">
+            <button class="btn-secondary" onclick="herstart()">🔁 Opnieuw</button>
+            <a href="https://bertmarinus.github.io/learnforge/" class="btn-success">← Terug naar overzicht</a>
+            <a href="https://bertmarinus.github.io/learnforge/" class="btn-secondary">🏠 Hoofdmenu</a>
+        </div>
+    </div>
+
+</div>
+
+<!-- FEEDBACK POPUP: GOED -->
+<div class="feedback-overlay hidden" id="feedbackGoed">
+    <div class="feedback-popup goed">
+        <div class="feedback-cirkel">✔</div>
+        <div class="feedback-tekst">Goed zo! 🎉</div>
+        <div class="feedback-sub" id="feedbackGoedSub"></div>
+    </div>
+</div>
+
+<!-- FEEDBACK POPUP: FOUT -->
+<div class="feedback-overlay hidden" id="feedbackFout">
+    <div class="feedback-popup fout">
+        <div class="feedback-cirkel">✕</div>
+        <div class="feedback-tekst">Helaas!</div>
+        <div class="feedback-sub" id="feedbackFoutSub"></div>
+    </div>
+</div>
+
+<!-- HINT MODAL -->
+<div class="modal-overlay hidden" id="modalHint">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-icon-circle">💡</div>
+            <div class="modal-title">Hint</div>
+        </div>
+
+        <div class="hint-subtext">Hoe herken ik een persoonlijk voornaamwoord?</div>
+        <ul class="hint-tips">
+            <li>Een persoonlijk voornaamwoord verwijst naar een persoon of ding</li>
+            <li>Voorbeelden: ik, jij, je, hij, zij, ze, het, wij, we, jullie</li>
+        </ul>
+
+        <div class="modal-footer">
+            <button class="btn-ok" onclick="sluitHint()">OK</button>
+        </div>
+    </div>
+</div>
+
+<script>
+
+        // GELUIDJES - lazy init na gebruikersinteractie
+        let audioCtx = null;
+        function getAudioCtx() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            return audioCtx;
+        }
+        function playGoedGeluid() {
+            try {
+                const ctx = getAudioCtx();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.frequency.value = 800;
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+                osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.15);
+            } catch(e) {}
+        }
+        function playFoutGeluid() {
+            try {
+                const ctx = getAudioCtx();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.frequency.value = 200;
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+                osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.2);
+            } catch(e) {}
+        }
+
+    // ============================================================
+    // DATA — 200 zinnen, elke keer geschud
+    // ============================================================
+    const alleOefeningen = [
+
+        // IK - vooraan
+        { zin: "Ik eet elke dag een appel.", pvn: "ik" },
+        { zin: "Ik loop naar school.", pvn: "ik" },
+        { zin: "Ik lees een spannend boek.", pvn: "ik" },
+        { zin: "Ik speel buiten met vrienden.", pvn: "ik" },
+        { zin: "Ik rijd op mijn fiets.", pvn: "ik" },
+        { zin: "Ik slaap vroeg.", pvn: "ik" },
+        { zin: "Ik kook elke avond.", pvn: "ik" },
+        { zin: "Ik schrijf een brief.", pvn: "ik" },
+        { zin: "Ik ken het antwoord.", pvn: "ik" },
+        { zin: "Ik vergeet nooit een afspraak.", pvn: "ik" },
+
+        // IK - na inversie
+        { zin: "Gisteren fietste ik naar het park.", pvn: "ik" },
+        { zin: "Morgen ga ik op vakantie.", pvn: "ik" },
+        { zin: "Vandaag bak ik een taart.", pvn: "ik" },
+        { zin: "Soms twijfel ik aan mezelf.", pvn: "ik" },
+        { zin: "Altijd doe ik mijn best.", pvn: "ik" },
+        { zin: "Nooit geef ik op.", pvn: "ik" },
+        { zin: "Vroeger woonde ik in Utrecht.", pvn: "ik" },
+        { zin: "Straks bel ik terug.", pvn: "ik" },
+        { zin: "Nu weet ik het zeker.", pvn: "ik" },
+        { zin: "Daarna ga ik slapen.", pvn: "ik" },
+
+        // JIJ - vooraan
+        { zin: "Jij loopt altijd te laat.", pvn: "jij" },
+        { zin: "Jij bakt de lekkerste taarten.", pvn: "jij" },
+        { zin: "Jij kent het antwoord.", pvn: "jij" },
+        { zin: "Jij rijdt te snel.", pvn: "jij" },
+        { zin: "Jij speelt heel goed piano.", pvn: "jij" },
+        { zin: "Jij vergeet altijd je sleutels.", pvn: "jij" },
+        { zin: "Jij werkt hard.", pvn: "jij" },
+        { zin: "Jij zingt prachtig.", pvn: "jij" },
+        { zin: "Jij leest snel.", pvn: "jij" },
+        { zin: "Jij helpt altijd anderen.", pvn: "jij" },
+
+        // JIJ - na inversie
+        { zin: "Gisteren belde jij niet.", pvn: "jij" },
+        { zin: "Morgen kom jij ook?", pvn: "jij" },
+        { zin: "Vandaag werk jij thuis.", pvn: "jij" },
+        { zin: "Soms lach jij heel hard.", pvn: "jij" },
+        { zin: "Altijd win jij het spel.", pvn: "jij" },
+        { zin: "Straks kom jij ook mee.", pvn: "jij" },
+        { zin: "Nu begrijp jij het.", pvn: "jij" },
+        { zin: "Dan weet jij het ook.", pvn: "jij" },
+        { zin: "Nooit huil jij.", pvn: "jij" },
+        { zin: "Vroeger speelde jij hockey.", pvn: "jij" },
+
+        // JE - vooraan
+        { zin: "Je loopt naar de bakker.", pvn: "je" },
+        { zin: "Je bakt brood.", pvn: "je" },
+        { zin: "Je leest een boek.", pvn: "je" },
+        { zin: "Je rijdt op de fiets.", pvn: "je" },
+        { zin: "Je speelt buiten.", pvn: "je" },
+        { zin: "Je werkt hard.", pvn: "je" },
+        { zin: "Je schrijft een brief.", pvn: "je" },
+        { zin: "Je zingt mooi.", pvn: "je" },
+        { zin: "Je helpt altijd.", pvn: "je" },
+        { zin: "Je slaapt vroeg.", pvn: "je" },
+
+        // JE - na inversie
+        { zin: "Gisteren fietste je naar huis.", pvn: "je" },
+        { zin: "Morgen ga je mee.", pvn: "je" },
+        { zin: "Vandaag kook je zelf.", pvn: "je" },
+        { zin: "Altijd doe je je best.", pvn: "je" },
+        { zin: "Straks kom je ook?", pvn: "je" },
+        { zin: "Nu weet je het.", pvn: "je" },
+        { zin: "Vroeger woonde je hier.", pvn: "je" },
+        { zin: "Daarna ga je slapen.", pvn: "je" },
+        { zin: "Dan begrijp je het.", pvn: "je" },
+        { zin: "Soms vergeet je de tijd.", pvn: "je" },
+
+        // HIJ - vooraan
+        { zin: "Hij loopt naar het station.", pvn: "hij" },
+        { zin: "Hij bakt elke dag brood.", pvn: "hij" },
+        { zin: "Hij leest een dik boek.", pvn: "hij" },
+        { zin: "Hij rijdt met de trein.", pvn: "hij" },
+        { zin: "Hij speelt voetbal.", pvn: "hij" },
+        { zin: "Hij werkt in een fabriek.", pvn: "hij" },
+        { zin: "Hij schrijft een gedicht.", pvn: "hij" },
+        { zin: "Hij zingt vals.", pvn: "hij" },
+        { zin: "Hij helpt zijn buurvrouw.", pvn: "hij" },
+        { zin: "Hij slaapt heel laat.", pvn: "hij" },
+
+        // HIJ - na inversie
+        { zin: "Gisteren fietste hij naar school.", pvn: "hij" },
+        { zin: "Morgen reist hij naar Parijs.", pvn: "hij" },
+        { zin: "Vandaag werkt hij thuis.", pvn: "hij" },
+        { zin: "Soms vergeet hij zijn sleutels.", pvn: "hij" },
+        { zin: "Altijd wint hij het spel.", pvn: "hij" },
+        { zin: "Nooit geeft hij op.", pvn: "hij" },
+        { zin: "Vroeger woonde hij in Leiden.", pvn: "hij" },
+        { zin: "Straks belt hij terug.", pvn: "hij" },
+        { zin: "Nu weet hij het antwoord.", pvn: "hij" },
+        { zin: "Daarna gaat hij slapen.", pvn: "hij" },
+
+        // ZIJ (enkelvoud) - vooraan
+        { zin: "Zij loopt elke dag naar werk.", pvn: "zij" },
+        { zin: "Zij bakt de lekkerste koekjes.", pvn: "zij" },
+        { zin: "Zij leest heel snel.", pvn: "zij" },
+        { zin: "Zij rijdt graag op de motor.", pvn: "zij" },
+        { zin: "Zij speelt viool.", pvn: "zij" },
+        { zin: "Zij werkt als dokter.", pvn: "zij" },
+        { zin: "Zij schrijft romans.", pvn: "zij" },
+        { zin: "Zij zingt in een koor.", pvn: "zij" },
+        { zin: "Zij helpt altijd iedereen.", pvn: "zij" },
+        { zin: "Zij slaapt altijd lang.", pvn: "zij" },
+
+        // ZIJ - na inversie
+        { zin: "Gisteren fietste zij naar het meer.", pvn: "zij" },
+        { zin: "Morgen reist zij naar Spanje.", pvn: "zij" },
+        { zin: "Vandaag kookt zij soep.", pvn: "zij" },
+        { zin: "Soms vergeet zij haar sleutels.", pvn: "zij" },
+        { zin: "Altijd wint zij het debat.", pvn: "zij" },
+        { zin: "Nooit geeft zij op.", pvn: "zij" },
+        { zin: "Vroeger woonde zij in Groningen.", pvn: "zij" },
+        { zin: "Straks belt zij haar moeder.", pvn: "zij" },
+        { zin: "Nu weet zij het antwoord.", pvn: "zij" },
+        { zin: "Daarna gaat zij lezen.", pvn: "zij" },
+
+        // ZE - vooraan
+        { zin: "Ze loopt naar de markt.", pvn: "ze" },
+        { zin: "Ze bakt elke week een taart.", pvn: "ze" },
+        { zin: "Ze leest graag poëzie.", pvn: "ze" },
+        { zin: "Ze rijden met de bus.", pvn: "ze" },
+        { zin: "Ze spelen in het park.", pvn: "ze" },
+        { zin: "Ze werken soms samen.", pvn: "ze" },
+        { zin: "Ze schrijft een dagboek.", pvn: "ze" },
+        { zin: "Ze zingen in een band.", pvn: "ze" },
+        { zin: "Ze helpen de buren.", pvn: "ze" },
+        { zin: "Ze slaapt heel diep.", pvn: "ze" },
+
+        // ZE - na inversie
+        { zin: "Gisteren liep ze naar het bos.", pvn: "ze" },
+        { zin: "Morgen reizen ze naar Rome.", pvn: "ze" },
+        { zin: "Vandaag koken ze samen.", pvn: "ze" },
+        { zin: "Soms vergeet ze haar paraplu.", pvn: "ze" },
+        { zin: "Altijd wint ze het schaakspel.", pvn: "ze" },
+        { zin: "Nooit geeft ze op.", pvn: "ze" },
+        { zin: "Vroeger woonde ze in Haarlem.", pvn: "ze" },
+        { zin: "Straks bellen ze terug.", pvn: "ze" },
+        { zin: "Nu begrijpen ze het.", pvn: "ze" },
+        { zin: "Daarna gaan ze wandelen.", pvn: "ze" },
+
+        // HET - vooraan
+        { zin: "Het regent buiten.", pvn: "het" },
+        { zin: "Het sneeuwt in december.", pvn: "het" },
+        { zin: "Het waait hard vandaag.", pvn: "het" },
+        { zin: "Het begint al laat te worden.", pvn: "het" },
+        { zin: "Het klopt wat jij zegt.", pvn: "het" },
+        { zin: "Het valt mee.", pvn: "het" },
+        { zin: "Het loopt goed af.", pvn: "het" },
+        { zin: "Het lukt altijd.", pvn: "het" },
+        { zin: "Het werkt eindelijk.", pvn: "het" },
+        { zin: "Het gaat goed.", pvn: "het" },
+
+        // HET - na inversie
+        { zin: "Gisteren regende het heel hard.", pvn: "het" },
+        { zin: "Morgen vriest het vast.", pvn: "het" },
+        { zin: "Vandaag waait het te hard.", pvn: "het" },
+        { zin: "Soms werkt het niet.", pvn: "het" },
+        { zin: "Nooit sneeuwt het in augustus.", pvn: "het" },
+        { zin: "Vroeger regende het hier meer.", pvn: "het" },
+        { zin: "Straks wordt het warmer.", pvn: "het" },
+        { zin: "Nu werkt het eindelijk.", pvn: "het" },
+        { zin: "Dan gaat het beter.", pvn: "het" },
+        { zin: "Altijd lukt het hem.", pvn: "het" },
+
+        // WIJ - vooraan
+        { zin: "Wij lopen elke dag samen.", pvn: "wij" },
+        { zin: "Wij bakken samen brood.", pvn: "wij" },
+        { zin: "Wij lezen dezelfde boeken.", pvn: "wij" },
+        { zin: "Wij rijden met de auto.", pvn: "wij" },
+        { zin: "Wij spelen in hetzelfde team.", pvn: "wij" },
+        { zin: "Wij werken elke dag hard.", pvn: "wij" },
+        { zin: "Wij schrijven een toneelstuk.", pvn: "wij" },
+        { zin: "Wij zingen in een koor.", pvn: "wij" },
+        { zin: "Wij helpen elkaar altijd.", pvn: "wij" },
+        { zin: "Wij slapen vroeg.", pvn: "wij" },
+
+        // WIJ - na inversie
+        { zin: "Gisteren fietsten wij naar het meer.", pvn: "wij" },
+        { zin: "Morgen reizen wij naar Brussel.", pvn: "wij" },
+        { zin: "Vandaag koken wij samen.", pvn: "wij" },
+        { zin: "Soms vergeten wij de tijd.", pvn: "wij" },
+        { zin: "Altijd winnen wij het spel.", pvn: "wij" },
+        { zin: "Nooit geven wij op.", pvn: "wij" },
+        { zin: "Vroeger woonden wij in Delft.", pvn: "wij" },
+        { zin: "Straks bellen wij terug.", pvn: "wij" },
+        { zin: "Nu begrijpen wij het.", pvn: "wij" },
+        { zin: "Daarna gaan wij eten.", pvn: "wij" },
+
+        // WE - vooraan
+        { zin: "We lopen door het bos.", pvn: "we" },
+        { zin: "We bakken een cake.", pvn: "we" },
+        { zin: "We lezen elke avond.", pvn: "we" },
+        { zin: "We rijden naar zee.", pvn: "we" },
+        { zin: "We spelen een bordspel.", pvn: "we" },
+        { zin: "We werken samen aan het project.", pvn: "we" },
+        { zin: "We schrijven een verhaal.", pvn: "we" },
+        { zin: "We zingen een liedje.", pvn: "we" },
+        { zin: "We helpen de buren.", pvn: "we" },
+        { zin: "We slapen onder de sterren.", pvn: "we" },
+
+        // WE - na inversie
+        { zin: "Gisteren liepen we door de stad.", pvn: "we" },
+        { zin: "Morgen gaan we naar het strand.", pvn: "we" },
+        { zin: "Vandaag eten we buiten.", pvn: "we" },
+        { zin: "Soms spelen we kaart.", pvn: "we" },
+        { zin: "Altijd doen we ons best.", pvn: "we" },
+        { zin: "Nooit vergeten we een verjaardag.", pvn: "we" },
+        { zin: "Vroeger speelden we hier.", pvn: "we" },
+        { zin: "Straks gaan we naar huis.", pvn: "we" },
+        { zin: "Nu begrijpen we het plan.", pvn: "we" },
+        { zin: "Daarna drinken we thee.", pvn: "we" },
+
+        // JULLIE - vooraan
+        { zin: "Jullie lopen te snel.", pvn: "jullie" },
+        { zin: "Jullie bakken heerlijk.", pvn: "jullie" },
+        { zin: "Jullie lezen dezelfde roman.", pvn: "jullie" },
+        { zin: "Jullie rijden met de trein.", pvn: "jullie" },
+        { zin: "Jullie spelen heel goed.", pvn: "jullie" },
+        { zin: "Jullie werken hard.", pvn: "jullie" },
+        { zin: "Jullie schrijven duidelijk.", pvn: "jullie" },
+        { zin: "Jullie zingen vals.", pvn: "jullie" },
+        { zin: "Jullie helpen altijd mee.", pvn: "jullie" },
+        { zin: "Jullie slapen te lang.", pvn: "jullie" },
+
+        // JULLIE - na inversie
+        { zin: "Gisteren fietsten jullie te snel.", pvn: "jullie" },
+        { zin: "Morgen gaan jullie mee?", pvn: "jullie" },
+        { zin: "Vandaag koken jullie zelf.", pvn: "jullie" },
+        { zin: "Soms vergeten jullie de tijd.", pvn: "jullie" },
+        { zin: "Altijd winnen jullie het debat.", pvn: "jullie" },
+        { zin: "Nooit geven jullie op.", pvn: "jullie" },
+        { zin: "Vroeger woonden jullie in Den Haag.", pvn: "jullie" },
+        { zin: "Straks komen jullie ook mee?", pvn: "jullie" },
+        { zin: "Nu begrijpen jullie het.", pvn: "jullie" },
+        { zin: "Daarna eten jullie samen.", pvn: "jullie" },
+    ];
+
+    function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    let oefeningen = shuffle(alleOefeningen);
+    let huidigIndex = 0;
+    let aantalGoed  = 0;
+    let aantalFout  = 0;
+    let bezig       = false;
+    let feedbackTimer = null;
+
+    function laadOefening(index) {
+        if (index >= oefeningen.length) { toonEindscherm(); return; }
+        document.getElementById('questionSentence').textContent = oefeningen[index].zin;
+        const el = document.getElementById('antwoordInput');
+        el.value = '';
+        el.disabled = false;
+        el.className = 'text-input';
+        bezig = false;
+        setTimeout(function() { el.focus(); }, 50);
+    }
+
+    function controleer() {
+        if (bezig) return;
+        if (!document.getElementById('modalHint').classList.contains('hidden')) return;
+        const el = document.getElementById('antwoordInput');
+        const invoer = el.value.trim().toLowerCase();
+        const juist  = oefeningen[huidigIndex].pvn.toLowerCase();
+        if (!invoer) return;
+        bezig = true;
+        el.disabled = true;
+        if (invoer === juist) {
+            aantalGoed++;
+            toonFeedback('goed', '"' + oefeningen[huidigIndex].pvn + '" is correct!', 1400);
+        } else {
+            aantalFout++;
+            toonFeedback('fout', 'Het antwoord is: ' + oefeningen[huidigIndex].pvn, 2000);
+        }
+    }
+
+    function toonFeedback(type, subtekst, duur) {
+        sluitAlleFeedback();
+        if (type === 'goed') {
+            playGoedGeluid();
+            document.getElementById('feedbackGoedSub').textContent = subtekst;
+            document.getElementById('feedbackGoed').classList.remove('hidden');
+        } else {
+            playFoutGeluid();
+            document.getElementById('feedbackFoutSub').textContent = subtekst;
+            document.getElementById('feedbackFout').classList.remove('hidden');
+        }
+        feedbackTimer = setTimeout(function() {
+            sluitAlleFeedback();
+            huidigIndex++;
+            laadOefening(huidigIndex);
+        }, duur);
+    }
+
+    function sluitAlleFeedback() {
+        document.getElementById('feedbackGoed').classList.add('hidden');
+        document.getElementById('feedbackFout').classList.add('hidden');
+        if (feedbackTimer) { clearTimeout(feedbackTimer); feedbackTimer = null; }
+    }
+
+    function showHint() {
+        document.getElementById('modalHint').classList.remove('hidden');
+    }
+
+    function sluitHint() {
+        document.getElementById('modalHint').classList.add('hidden');
+    }
+
+    function toonEindscherm() {
+        document.getElementById('oefeningCard').style.display = 'none';
+        document.getElementById('questionCard').style.display = 'none';
+        document.getElementById('eindscherm').style.display   = 'block';
+        const totaal = aantalGoed + aantalFout;
+        document.getElementById('eindScore').textContent = aantalGoed + ' / ' + totaal;
+        const r = totaal > 0 ? aantalGoed / totaal : 0;
+        document.getElementById('eindBericht').textContent =
+            r === 1   ? '🌟 Fantastisch! Alles goed!' :
+            r >= 0.75 ? '👍 Goed gedaan! Blijf oefenen!' :
+            r >= 0.5  ? '🙂 Aardig werk, oefen nog wat meer.' :
+                        '💪 Blijf oefenen, het lukt je!';
+    }
+
+    function herstart() {
+        oefeningen = shuffle(alleOefeningen);
+        aantalGoed = aantalFout = huidigIndex = 0;
+        document.getElementById('oefeningCard').style.display = 'block';
+        document.getElementById('questionCard').style.display = 'block';
+        document.getElementById('eindscherm').style.display   = 'none';
+        laadOefening(0);
+    }
+
+    // Enter op desktop én mobiel
+    document.getElementById('antwoordInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); controleer(); }
+    });
+    document.getElementById('antwoordInput').addEventListener('keyup', function(e) {
+        if (e.keyCode === 13) { e.preventDefault(); controleer(); }
+    });
+
+    // START
+    laadOefening(0);
+</script>
+</body>
+</html>
